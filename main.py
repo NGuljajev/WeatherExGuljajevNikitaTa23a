@@ -3,20 +3,15 @@ import json
 
 latitude = "59.4370"
 longitude = "24.7535"
-url = f"https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={latitude}&lon={longitude}"
+url = f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&hourly=temperature_2m"
 
-headers = {
-    "User": "WeatherApp"
-}
-
-response = requests.get(url, headers=headers)
+response = requests.get(url)
 data = response.json()
 
-first_time = data["properties"]["timeseries"][0]["time"]
-last_time = data["properties"]["timeseries"][-1]["time"]
-print(f"Ilmaennustused alates {first_time} kuni {last_time}\n")
+times = data["hourly"]["time"]
+temperatures = data["hourly"]["temperature_2m"]
 
-for timeseries in data["properties"]["timeseries"]:
-    time = timeseries["time"]
-    temperature = timeseries["data"]["instant"]["details"]["air_temperature"]
-    print(f"{time} {temperature}C")
+print(f"Ilmaennustused alates {times[0]} kuni {times[-1]}\n")
+
+for i in range(len(times)):
+    print(f"{times[i]} {temperatures[i]}C")
